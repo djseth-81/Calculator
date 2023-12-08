@@ -7,15 +7,7 @@ Unit tests for the formulas module that will be used in the Calculator applicati
 
 Assumptions: Type str is the default
 """
-"""
-TODO:
-- operators handle non-digit strings properly
-- operators handle UNDEF or NULL results and displays them properly
-- operators provide proper outputs for:
-    - floats: one +/-, both + and both -
-    - str: one +/-, both + and both -
-    - Sufficiently large, and sufficiently small numbers
-"""
+
 ### Import packages ###
 import math
 import unittest
@@ -48,7 +40,6 @@ class MyTestCases(unittest.TestCase):
         self.assertAlmostEqual(add('-2', '3'), 1.0, delta=self.DELTA)
         self.assertAlmostEqual(add('2', '-3'), -1.0, delta=self.DELTA)
         self.assertAlmostEqual(add('-2', '-3'), -5.0, delta=self.DELTA)
-        
     
     def test_subtract(self):
         ### Validating the actual math ###
@@ -123,8 +114,9 @@ class MyTestCases(unittest.TestCase):
         ### Validating the actual math ###
         # Small numbers, large numbers, and conventional numbers
         self.assertAlmostEqual(power('2', '3'), 8.0, delta=self.DELTA) # One digit
-        self.assertAlmostEqual(power('0.0002', '3'), 1.00, delta=self.DELTA) # small base
-        self.assertAlmostEqual(power('2', '0.003'), 1.00, delta=self.DELTA) # small exponent
+        self.assertAlmostEqual(power('0.02', '3'), 0.00, delta=self.DELTA) # small base
+        self.assertRaises(ValueError, power, '0.002', '3')# too small of a base
+        self.assertRaises(ValueError, power, '2', '0.3') # exponent < 1
 
         self.assertAlmostEqual(power('200000', '3'), 8000000000000000.0, delta=self.DELTA) # large base
         self.assertAlmostEqual(power('2', '80'), 1208925819614629174706176.0, delta=self.DELTA) # large exponent

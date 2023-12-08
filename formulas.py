@@ -62,7 +62,8 @@ def multiply(x: str, y: str) -> float:
 
 def divide(x: str, y: str) -> float:
     """
-    Performs a division between two float values
+    Performs a division between two float values.
+    This function will raise a ValueError if no digits are passed in the parameters, or if it attempts to divide by 0.    
 
     :param x: a string value that is converted into a float value to represent the numerator
     :param y: a string value that is converted into a float value to represent the denominator
@@ -79,15 +80,24 @@ def divide(x: str, y: str) -> float:
 def power(x: str, y: str) -> float:
     """
     This recursive function calculates the exponent of a number given an exponent.
+    This function will throw a ValueError in the following conditions:
+        - There are no digits detected in the parameters
+        - The function is called to calculate 0^0
+        - The function is called with a base value greater than 0, but less than 0.01
+        - The function is called with a exponent value greater than 0, but less than 1
 
     :param x: a string value that is converted into a float value to represent the base
     :param y: a string value that is converted into a float value to represent the exponent
     :return: the exponentiation of the floats of x to the y 
     """
-
-    if len(re.findall("[0-9]", x)) == 0 or len(re.findall("[0-9]", y)) == 0: # Checks if numbers are found in the passed parameters
+    # Checks if numbers are found in the passed parameters
+    if len(re.findall("[0-9]", x)) == 0 or len(re.findall("[0-9]", y)) == 0:
         raise ValueError
     
+    # If the values passed to the base or the exponent are too small or the exponent is too big the calculator cannot handle them
+    if ((0 < float(x) < 0.01) or (0 < float(y) < 1)) or float(y) > 99:
+        raise ValueError
+
     # Converting values from str to float 
     base = float(x)
     exp = abs(float(y)) # converts to an absolute value float of the string

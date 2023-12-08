@@ -49,15 +49,15 @@ class Calculator(QMainWindow, CalculatorGUI):
     reset():
         resets the GUI settings to the default
     getVal1():
-        returns the current saved val1 as a float
+        returns the current saved val1 as a string
     getVal2():
-        returns the current saved val2 as a float
+        returns the current saved val2 as a string
     getAnswer():
-        returns the current saved answer
+        returns the current saved answer as a float
     getDisplayVal():
-        returns the current value displayed by the GUI
+        returns the current value displayed by the GUI as a string
     getOperation():
-        returns the selected operation
+        returns the selected operation as a string
     __str__():
         returns a formatted string by calling the accessors for each of the attributes
     """
@@ -103,10 +103,18 @@ class Calculator(QMainWindow, CalculatorGUI):
         self.buttonCOMPUTE.clicked.connect(lambda : self.compute())
 
     ### Mutators ###
-    def updateDisplay(self) -> None: # updates the value in labelDisplay
+    def updateDisplay(self) -> None:
+        """
+        Updates the value in displayBox.
+        """
         self.displayBox.setText(self.__displayVal)
 
-    def enterValue(self, val: str) -> None: # appends a value to the end of the displayValue
+    def enterValue(self, val: str) -> None:
+        """
+        Appends a value to the end of the displayVal.
+
+        :param val: string value to be appended to displayVal
+        """
         if self.__displayVal == "0": # when displayVal is 0
             if re.findall("[1-9]", val): # resets 0 to most significant digit
                 self.__displayVal = val
@@ -118,23 +126,35 @@ class Calculator(QMainWindow, CalculatorGUI):
             pass
         else: # append val otherwise
             self.__displayVal += val
-        self.updateDisplay() # updates GUI labelDisplay
+        self.updateDisplay() # updates GUI displayBox
 
-    def setDisplay(self, val: str) -> None: # sets value to the passed parameter val
+    def setDisplay(self, val: str) -> None:
+        """
+        Sets value to the passed parameter val.
+        
+        :param val: string value that will replace current value of displayVal
+        """
         # intended for use in compute()
         self.__displayVal = val
-        self.updateDisplay()
+        self.updateDisplay() # updates GUI displayBox
 
-    def setOperation(self, val: str) -> None: # Determines operation to compute when needed
-        self.__val1 = self.__displayVal
-        if len(self.__val2) > 0:
-            print("Resetting val2")
+    def setOperation(self, val: str) -> None: 
+        """
+        Records the operation that will need to be computed.
+
+        :param val: string value representing operation to run when compute() is called
+        """
+        self.__val1 = self.__displayVal # if no val2 is assigned, assign to displayVal
+        if len(self.__val2) > 0: # if a value is assigned to val2, wipe it
             self.__val2 = ""
         self.setDisplay("0")
         self.__operation = val # assigns operand for computation
 
     def compute(self) -> None:
-        if len(self.__val2) == 0:
+        """
+        Computes the recorded arithmetic operation and displays the answer to the GUI.
+        """
+        if len(self.__val2) == 0: # if no val2 is assigned, assign to displayVal
             self.__val2 = self.__displayVal
 
         # case block for each different operation
@@ -144,7 +164,6 @@ class Calculator(QMainWindow, CalculatorGUI):
             elif self.__operation == "subtract":
                 self.__ans = subtract(self.__val1, self.__val2)
             elif self.__operation == "multiply":
-                print(f"{self.__val1} * {self.__val2} = {multiply(self.__val1, self.__val2)}")
                 self.__ans = multiply(self.__val1, self.__val2)
             elif self.__operation == "divide":
                 self.__ans = divide(self.__val1, self.__val2)
@@ -155,8 +174,11 @@ class Calculator(QMainWindow, CalculatorGUI):
         except (ValueError, ZeroDivisionError): # If an undefined error was thrown during an operation
             self.setDisplay("UNDEF")
 
-    def reset(self) -> None: # reverts the answer, val1, val2, and displayVal to their default state
-        # Intended for the Clear button
+    def reset(self) -> None:
+        """
+        Resets all instance variables to their default state.
+        Intended for the Clear button.
+        """
         self.__displayVal = "0"
         self.__val1 = ""
         self.__val2 = ""
@@ -165,29 +187,38 @@ class Calculator(QMainWindow, CalculatorGUI):
         self.updateDisplay()
 
     ### Accessors ###
-    def getVal1(self) -> str: # gets the current val1
+    def getVal1(self) -> str:
+        """
+        Returns the current val1 value as a string.
+        """
         return self.__val1
     
-    def getVal2(self) -> str: # gets the current val2
+    def getVal2(self) -> str:
+        """
+        Returns the current val2 value as a string.
+        """
         return self.__val2
 
-    def getAnswer(self) -> float: # Gets the current answer value
+    def getAnswer(self) -> float:
+        """
+        Returns the current ans value as a float.
+        """
         return self.__ans
 
-    def getDisplayVal(self) -> str: # gets the current displayed text in the GUI
+    def getDisplayVal(self) -> str: 
+        """
+        Returns the current displayed text in the GUI as a string.
+        """
         return self.displayBox.text().strip()
 
-    def getOperation(self) -> str: # returns the currently selected operation
+    def getOperation(self) -> str:
+        """
+        Returns the currently selected operation as a string.
+        """
         return self.__operation
 
     def __str__(self) -> str:
+        """
+        Returns a formatted string to print the instance variables to the console.
+        """
         return f"view={self.getDisplayVal()}, x={self.getVal1()}, y={self.getVal2()}, Operation={self.getOperation()}, Answer={self.getAnswer()}"
-"""
-TODO:
-- Calculator 
-    - Should be able to continually perform the operation
-        - first entry is ANS, second is SECOND USER ENTRY
-    - Introduce toggle between positive and negative entries
-    - Dropdown to allow searching for old operations?
-        - IF SO: add an ALL CLEAR option to GUI
-"""

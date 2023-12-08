@@ -23,16 +23,5 @@ def main():
     applet.show() # Calls window to show
     app.exec() # Execute application
 
-"""
-TODO:
-Features
-    - can perform consecutive operations when hitting compute
-    - displays "UNDEF" when an operation is undefined
-Updates
-    - add performing computations inbetween switching operators
-    - add allowing to flip between pos and neg
-"""
-
 if __name__ == "__main__":
     main()
-    print("Ran locally")
