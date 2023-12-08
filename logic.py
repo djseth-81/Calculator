@@ -9,7 +9,6 @@ TODO:
 - Handle repetitive computation for the same operator
 - Handle repetitive computation for different operators
 - REMOVE PRINT STRINGS WHEN FINISHED
-
 """
 ### Import packages ###
 from PyQt6.QtWidgets import *
@@ -35,7 +34,6 @@ class Calculator(QMainWindow, CalculatorGUI):
     ans : float
         The float value from the resulting computation
 
-    
     Methods
     -------
     updateDisplay():
@@ -114,49 +112,48 @@ class Calculator(QMainWindow, CalculatorGUI):
                 self.__displayVal = val
             elif val == ".": # appends decimal
                 self.__displayVal += val
+        elif self.__displayVal == f"{self.__ans:.2f}" or len(re.findall("[a-zA-Z]", self.__displayVal)) > 0: # if answer has been displayed on screen after an operation, replace with a new value
+            self.__displayVal = val
         elif re.findall("\.+", self.__displayVal) and val == ".": # When the decmial place is already defined
             pass
-        elif self.__val1 == self.__displayVal or self.__val2 == self.__displayVal: # if answer has been displayed on screen after an operation, replace with a new value
-            self.__displayVal = val
         else: # append val otherwise
             self.__displayVal += val
         self.updateDisplay() # updates GUI labelDisplay
-        print(self.__str__()) ### DEBUG
 
     def setDisplay(self, val: str) -> None: # sets value to the passed parameter val
         # intended for use in compute()
         self.__displayVal = val
         self.updateDisplay()
-        print(self.__str__()) ### DEBUG
 
     def setOperation(self, val: str) -> None: # Determines operation to compute when needed
-        print(f"You chose to {val}")
         self.__val1 = self.__displayVal
-        print(f"Saving val1 = {self.__val1}")
+        if len(self.__val2) > 0:
+            print("Resetting val2")
+            self.__val2 = ""
         self.setDisplay("0")
         self.__operation = val # assigns operand for computation
-        print(self.__str__()) ### DEBUG
 
     def compute(self) -> None:
-        self.__val2 = self.__displayVal
-        print(f"Saving val2 = {self.__val2}")
-        print(f"Computing for {self.__val1} and {self.__val2}")
+        if len(self.__val2) == 0:
+            self.__val2 = self.__displayVal
 
         # case block for each different operation
-        if self.__operation == "add":
-            self.__ans = add(self.__val1, self.__val2)
-        elif self.__operation == "subtract":
-            self.__ans = subtract(self.__val1, self.__val2)
-        elif self.__operation == "multiply":
-            print(f"{self.__val1} * {self.__val2} = {multiply(self.__val1, self.__val2)}")
-            self.__ans = multiply(self.__val1, self.__val2)
-        elif self.__operation == "divide":
-            self.__ans = divide(self.__val1, self.__val2)
-        elif self.__operation == "power":
-            self.__ans = power(self.__val1, self.__val2)
-        self.__val1 = str(self.__ans) # assigning ans to val1
-        self.setDisplay(str(self.__ans)) # displays answer to lableDisplay
-        print(self.__str__()) ### DEBUG
+        try:
+            if self.__operation == "add":
+                self.__ans = add(self.__val1, self.__val2)
+            elif self.__operation == "subtract":
+                self.__ans = subtract(self.__val1, self.__val2)
+            elif self.__operation == "multiply":
+                print(f"{self.__val1} * {self.__val2} = {multiply(self.__val1, self.__val2)}")
+                self.__ans = multiply(self.__val1, self.__val2)
+            elif self.__operation == "divide":
+                self.__ans = divide(self.__val1, self.__val2)
+            elif self.__operation == "power":
+                self.__ans = power(self.__val1, self.__val2)
+            self.__val1 = str(self.__ans) # assigning ans to val1
+            self.setDisplay(f"{self.__ans:.2f}") # displays answer to lableDisplay
+        except (ValueError, ZeroDivisionError): # If an undefined error was thrown during an operation
+            self.setDisplay("UNDEF")
 
     def reset(self) -> None: # reverts the answer, val1, val2, and displayVal to their default state
         # Intended for the Clear button
@@ -164,28 +161,27 @@ class Calculator(QMainWindow, CalculatorGUI):
         self.__val1 = ""
         self.__val2 = ""
         self.__operation = ""
-        self.__ans = ""
+        self.__ans = 0.0
         self.updateDisplay()
-        print(self.__str__()) ### DEBUG
 
     ### Accessors ###
-    def getVal1(self) -> float: # gets the current float of val1
-        return float(self.__val1)
+    def getVal1(self) -> str: # gets the current val1
+        return self.__val1
     
-    def getVal2(self) -> float: # gets the current float of val2
-        return float(self.__val2)
+    def getVal2(self) -> str: # gets the current val2
+        return self.__val2
 
     def getAnswer(self) -> float: # Gets the current answer value
         return self.__ans
 
     def getDisplayVal(self) -> str: # gets the current displayed text in the GUI
-        return self.displayBox.getText()
+        return self.displayBox.text().strip()
 
     def getOperation(self) -> str: # returns the currently selected operation
         return self.__operation
 
     def __str__(self) -> str:
-        return f"view={self.getDisplayVal()}, x={self.getVal1()}, y={self.getVal2()}, Operation={self.getOperation()}, Answer={sel.getAnswer()}"
+        return f"view={self.getDisplayVal()}, x={self.getVal1()}, y={self.getVal2()}, Operation={self.getOperation()}, Answer={self.getAnswer()}"
 """
 TODO:
 - Calculator 

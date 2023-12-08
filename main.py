@@ -25,13 +25,12 @@ def main():
 
 """
 TODO:
-- formulas.py FIXME
-    - Logic.py
-    Caclulator
-        - allows to flip between pos and neg
-        - consecutive same operator computations
-        - performing computations inbetween switching operators
-
+Features
+    - can perform consecutive operations when hitting compute
+    - displays "UNDEF" when an operation is undefined
+Updates
+    - add performing computations inbetween switching operators
+    - add allowing to flip between pos and neg
 """
 
 if __name__ == "__main__":
