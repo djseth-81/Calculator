@@ -1,0 +1,7 @@
+calculate.ui
+calculate.py
+convert.ui
+convert.py
+**/__pycache__/
+**/.vscode/
+**/.pytest_cache/
