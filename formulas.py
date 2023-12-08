@@ -77,7 +77,7 @@ def divide(x: str, y: str) -> float:
         raise ValueError
 
     if float(y) == 0.0: # Handles 0 as Divisor
-        raise ValueError
+        raise ZeroDivisionError("Cannot divide by 0")
     
     return float(x) / float(y) # FIXME: Cannot handle 0 as divisor
 
@@ -95,27 +95,29 @@ def power(x: str, y: str) -> float:
         - y < 0 -> -1 / x^y
         - y = 0 -> 1
     """
-    if len(re.findall("[0-9]", x)) == 0 or len(re.findall("[0-9]", x)) == 0: # Checks if numbers are found in the passed parameters
+    if len(re.findall("[0-9]", x)) == 0 or len(re.findall("[0-9]", y)) == 0: # Checks if numbers are found in the passed parameters
         raise ValueError
     
     # Converting values from str to float 
-    x = float(x)
-    y = float(y) # FIXME: cannot handle y <= 0.0
+    base = float(x)
+    exp = abs(float(y)) # converts to an absolute value float of the string
 
-    if x == 0.0 and y == 0.0: # handles 0^0 operation
+    if base == 0.0 and exp == 0.0: # handles 0^0 operation
         raise ValueError("Undefined operation 0^0.")
     
-    if x != 0.0 and y == 0.0: # handles 0 as the exponent
+    if base != 0.0 and exp == 0.0: # handles 0 as the exponent
         return 1.0
 
     # performing power operation
-    if not (y > 0.0): # Raise error if exponent is not a positive integer
-        raise ValueError("exponent is not a positive integer") # Change to work well with the GUI
+    # if not (exp > 0.0): # Raise error if exponent is not a positive integer
+    #     raise ValueError("Exponent is not a positive integer") # Change to work well with the GUI
         
-    if y == 1.0: # base condition
-        return x
+    if exp == 1.0: # base condition
+        result = base
     else: # recursive condition
-        return x * power(str(x), str(y - 1.0)) # Convert params into type str to satisfy  typehinting and RegEx
+        result = base * power(str(base), str(exp - 1.0)) # Convert params into type str to satisfy  typehinting and RegEx
+
+    return result if (float(y) > 0) else 1 / result # divides 1 by result if y was itially passed as < 0
 
 if __name__ == "__main__":
     
@@ -138,13 +140,14 @@ if __name__ == "__main__":
     print(f"2 / 3.0 = {divide('2', '3.0'):.2f}") # = 0.67
     print(f"2 / -3 = {divide('2', '-3'):.2f}") # = -0.67
     print(f"0 / 3 = {divide('0', '3'):.2f}") # = 0.00
-    # print(f"2 / 0 = {divide('2', '0'):.2f}") # = Undef # FIXME: cannot handle 0 as divisor
+    print(f"2 / 0 = {divide('2', '0'):.2f}") # = Undef
     # power
     print(f"2 ^ 3 = {power('2', '3'):.2f}") # = 8.00
-    print(f"-2 ^ 3 = {power('-2', '3'):.2f}") # = -8.00
+    print(f"-2 ^ 4 = {power('-2', '3'):.2f}") # = -8.00
+    print(f"-2 ^ 4 = {power('-2', '4'):.2f}") # = 16.00
     print(f"2 ^ 0 = {power('2', '0'):.2f}") # = 1.00
-    print(f"0 ^ 3 = {power('0', '3'):.2f}") # = 1.00
-    # print(f"2 ^ -3 = {power('2', '-3'):.2f}") # = 0.12 FIXME: y value cannot handle negative exponents
-    # print(f"0 ^ 0 = {power('0', '0'):.2f}") # = Undef FIXME: y value is goofed
+    print(f"0 ^ 3 = {power('0', '3'):.2f}") # = 0.00
+    print(f"2 ^ -3 = {power('2', '-3'):.2f}") # = 0.12
+    print(f"0 ^ 0 = {power('0', '0'):.2f}") # = Undef
     
     print("### CONSOLE: `formulas.py` ran locally...")
